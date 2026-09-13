@@ -12,7 +12,7 @@
     .note-text { font-size: 12px; font-weight: normal; color: #d9534f; }
     .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #f0f0f0; }
     .item-label { font-size: 15px; font-weight: 500; padding-right: 10px; }
-    select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; background-color: #fff; }
+    select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; background-color: #fff; max-width: 130px; }
     input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
     button { width: 100%; background: #d9534f; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
     button:hover { background: #c9302c; }
@@ -82,10 +82,10 @@
         "烤櫛瓜", 
         "新鮮香菇", 
         "烤玉米", 
-        "錫箔蛤蜊金針菇"
+        "蛤蜊金針菇"
       ],
       other: [
-        "錫箔盒大阪燒 (主食)", 
+        "大阪燒 (主食)", 
         "生吐司 (富含膳食纖維/15種穀物，不卡喉無雞飼料味)", 
         "手工甜不辣", 
         "醬燒米血", 
@@ -104,17 +104,24 @@
       ]
     };
 
-    const options = ["不吃", "一點就好", "正常份量", "想吃很多"];
+    const defaultOptions = ["No", "一點就好", "正常份量", "想吃很多"];
 
     function renderItems(sectionId, items) {
       const container = document.getElementById(sectionId);
       items.forEach(item => {
         const row = document.createElement('div');
         row.className = 'item-row';
+        
+        // 針對「美枝的茶」客製化選項
+        let currentOptions = [...defaultOptions];
+        if (item === "美枝的茶") {
+          currentOptions[0] = "No, Thank you";
+        }
+
         row.innerHTML = `
           <span class="item-label">${item}</span>
           <select class="food-select" data-food="${item}">
-            ${options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+            ${currentOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
           </select>
         `;
         container.appendChild(row);
@@ -134,7 +141,8 @@
       let details = [];
       selects.forEach(sel => {
         const val = sel.value;
-        if (val !== "不吃") {
+        // 過濾掉「No」與「No, Thank you」
+        if (val !== "No" && val !== "No, Thank you") {
           details.push(`・${sel.dataset.food}：${val}`);
         }
       });
@@ -163,6 +171,7 @@
 
       const lines = inputText.split('\n');
       const tally = {};
+      const validLevels = ["一點就好", "正常份量", "想吃很多"];
 
       lines.forEach(line => {
         if (line.includes('：')) {
@@ -170,9 +179,11 @@
           if (parts.length === 2) {
             const food = parts[0].trim();
             const level = parts[1].trim();
-            if (options.includes(level)) {
+            
+            // 只要選項是需要統計的份量，就加入計算
+            if (validLevels.includes(level)) {
               if (!tally[food]) tally[food] = { "一點就好": 0, "正常份量": 0, "想吃很多": 0 };
-              if (tally[food][level] !== undefined) tally[food][level]++;
+              tally[food][level]++;
             }
           }
         }
