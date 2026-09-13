@@ -3,23 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>中秋烤肉意願調查與統計</title>
+  <title>2026 烤肉歡聚大會意願調查</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 15px; }
     .card { max-width: 600px; margin: 0 auto 20px auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    h2 { text-align: center; color: #d9534f; margin-top: 0; margin-bottom: 15px; }
-    .section-title { font-weight: bold; margin-top: 20px; margin-bottom: 10px; color: #444; border-bottom: 2px solid #eee; padding-bottom: 5px; font-size: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
-    .note-text { font-size: 12px; font-weight: normal; color: #d9534f; }
-    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #f0f0f0; }
+    h2 { text-align: center; color: #d9534f; margin-top: 0; margin-bottom: 15px; line-height: 1.4; }
+    
+    /* 這裡加上了底色與圓角，讓分類更明顯 */
+    .section-title { 
+      font-weight: bold; 
+      margin-top: 25px; 
+      margin-bottom: 10px; 
+      color: #c0392b; 
+      background-color: #ffe5d9; /* 烤肉溫暖橘底色 */
+      padding: 10px 12px; 
+      border-radius: 8px; 
+      font-size: 16px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+    }
+    
+    .note-text { font-size: 12px; font-weight: normal; color: #c0392b; }
+    .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px dashed #e0e0e0; }
     .item-label { font-size: 15px; font-weight: 500; padding-right: 10px; }
     select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; background-color: #fff; }
-    input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; margin-bottom: 15px; font-size: 16px; }
-    button { width: 100%; background: #d9534f; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+    input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; margin-bottom: 5px; font-size: 15px; }
+    button { width: 100%; background: #d9534f; color: white; border: none; padding: 14px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     button:hover { background: #c9302c; }
     textarea { width: 100%; height: 120px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; margin-top: 8px; }
     .copy-btn { background: #5cb85c; margin-top: 8px; }
     .copy-btn:hover { background: #4cae4c; }
-    .host-btn { background: #0275d8; }
+    .host-btn { background: #0275d8; margin-top: 10px; }
     .host-btn:hover { background: #025aa5; }
     .stat-result { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 12px; margin-top: 15px; white-space: pre-wrap; font-family: monospace; font-size: 14px; }
   </style>
@@ -28,9 +43,9 @@
 
   <!-- 第一區：參加者點菜單 -->
   <div class="card">
-    <h2>🔥 中秋烤肉點菜單 🔥</h2>
+    <h2>🎆 2026 烤肉歡聚大會 🎆<br>點菜單</h2>
     <label for="name"><b>你的名字 / 稱呼：</b></label>
-    <input type="text" id="name" placeholder="例如：大伯 / 小明">
+    <input type="text" id="name" placeholder="請填入可辨識的人名，要很多人填一張我也是可">
 
     <div class="section-title">🥩 肉品與海鮮</div>
     <div id="section-meat"></div>
@@ -43,14 +58,14 @@
 
     <div class="section-title">
       <span>🥤 飲料與酒水</span>
-      <span class="note-text">※ 依大家想喝的採買，不會每種都買</span>
+      <span class="note-text">※ 依大家想喝的採買，不會每種都買，懂吧？</span>
     </div>
     <div id="section-drink"></div>
 
-    <button onclick="generateSummary()">產生我的喜好選擇</button>
+    <button onclick="generateSummary()">先這樣，謝拉</button>
 
     <div id="result-area" style="display:none;">
-      <div class="section-title">📋 步驟二：複製內容貼到 LINE 群組</div>
+      <div class="section-title" style="background-color: #d1ecf1; color: #0c5460;">📋 步驟二：複製內容貼到 LINE 群組</div>
       <textarea id="summary-text" readonly></textarea>
       <button class="copy-btn" onclick="copyText()">一鍵複製文字</button>
     </div>
@@ -58,7 +73,7 @@
 
   <!-- 第二區：主辦人自動統計工具 -->
   <div class="card" style="border: 2px dashed #0275d8;">
-    <h3 style="margin-top:0; color:#0275d8;">📊 主辦人一鍵統計專區</h3>
+    <h3 style="margin-top:0; color:#0275d8;">📊 主辦人一鍵統計專區 (你不要弄)</h3>
     <p style="font-size:13px; color:#666;">將大家傳在 LINE 群組裡的回覆訊息全部複製，一次貼在下方框框內：</p>
     <textarea id="line-input" placeholder="將 LINE 群組裡大家的填寫結果全部貼在這裡..."></textarea>
     <button class="host-btn" onclick="calculateTotals()">自動計算總需求量</button>
@@ -127,7 +142,7 @@
 
     function generateSummary() {
       const name = document.getElementById('name').value.trim();
-      if (!name) { alert('請填寫您的名字喔！'); return; }
+      if (!name) { alert('請填寫您的名字喔！不然我不知道是誰點的。'); return; }
 
       const selects = document.querySelectorAll('.food-select');
       let details = [];
@@ -140,7 +155,7 @@
 
       if (details.length === 0) { alert('請至少選擇一種想吃的食材量喔！'); return; }
 
-      const text = `【中秋烤肉點菜】${name}\n-------------------\n` + details.join('\n') + `\n-------------------`;
+      const text = `【2026烤肉歡聚點菜】${name}\n-------------------\n` + details.join('\n') + `\n-------------------`;
       document.getElementById('summary-text').value = text;
       document.getElementById('result-area').style.display = 'block';
     }
