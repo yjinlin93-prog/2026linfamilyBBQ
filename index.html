@@ -8,15 +8,13 @@
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 15px; }
     .card { max-width: 600px; margin: 0 auto 20px auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     h2 { text-align: center; color: #d9534f; margin-top: 0; margin-bottom: 15px; line-height: 1.4; }
-    
-    /* 更新：為大項目標題加上底色、左側重點邊框與圓角，讓層次更分明 */
     .section-title { 
       font-weight: bold; 
       margin-top: 25px; 
       margin-bottom: 12px; 
       color: #333; 
-      background-color: #fcebeb; /* 淡淡的紅色底色 */
-      border-left: 5px solid #d9534f; /* 左側紅色重點標示 */
+      background-color: #fcebeb; 
+      border-left: 5px solid #d9534f; 
       padding: 10px 12px; 
       border-radius: 4px;
       font-size: 16px; 
@@ -24,7 +22,6 @@
       justify-content: space-between; 
       align-items: center; 
     }
-    
     .note-text { font-size: 12px; font-weight: normal; color: #d9534f; }
     .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px dashed #f0f0f0; }
     .item-label { font-size: 15px; font-weight: 500; padding-right: 10px; }
@@ -48,7 +45,10 @@
     <label for="name"><b>你的名字 / 稱呼：</b></label>
     <input type="text" id="name" placeholder="請填入可辨識的人名，多人寫一張我也是可">
 
-    <div class="section-title">🥩 肉品與海鮮</div>
+    <div class="section-title">
+      <span>🥩 肉品與海鮮</span>
+      <span class="note-text">※ 想吃很多就是5個以上</span>
+    </div>
     <div id="section-meat"></div>
 
     <div class="section-title">🥬 蔬菜與包肉配菜</div>
@@ -89,19 +89,20 @@
         "牛肉片", 
         "豬肉片", 
         "醬燒雞翅", 
-        "鮮蝦", 
+        "烤蝦", 
         "茄子包蝦餅 (手工菜)"
       ],
       veg: [
         "美生菜 (包肉)", 
         "青紫蘇葉", 
-        "烤櫛瓜", 
-        "新鮮香菇", 
+        "櫛瓜瓜", 
+        "烤香菇", 
         "烤玉米", 
         "蛤蜊金針菇"
       ],
       other: [
-        "大阪燒 (主食)", 
+        "白飯",
+        "大阪燒（高麗菜多多，無炒麵在裡面）", 
         "生吐司 (富含膳食纖維/15種穀物，不卡喉無雞飼料味)", 
         "手工甜不辣", 
         "醬燒米血", 
@@ -128,9 +129,13 @@
         const row = document.createElement('div');
         row.className = 'item-row';
         
+        // 針對特定品項客製化選項
         let currentOptions = [...defaultOptions];
         if (item === "美枝的茶") {
           currentOptions[0] = "No, Thank you";
+        }
+        if (item === "手搖飲") {
+          currentOptions[1] = "1杯";
         }
 
         row.innerHTML = `
@@ -185,7 +190,7 @@
 
       const lines = inputText.split('\n');
       const tally = {};
-      const validLevels = ["一點就好", "正常份量", "想吃很多"];
+      const validLevels = ["一點就好", "1杯", "正常份量", "想吃很多"];
 
       lines.forEach(line => {
         if (line.includes('：')) {
@@ -195,7 +200,7 @@
             const level = parts[1].trim();
             
             if (validLevels.includes(level)) {
-              if (!tally[food]) tally[food] = { "一點就好": 0, "正常份量": 0, "想吃很多": 0 };
+              if (!tally[food]) tally[food] = { "一點就好": 0, "1杯": 0, "正常份量": 0, "想吃很多": 0 };
               tally[food][level]++;
             }
           }
@@ -206,11 +211,12 @@
       let hasData = false;
       for (const [food, counts] of Object.entries(tally)) {
         hasData = true;
-        const totalPeople = counts["一點就好"] + counts["正常份量"] + counts["想吃很多"];
+        const totalPeople = counts["一點就好"] + counts["1杯"] + counts["正常份量"] + counts["想吃很多"];
         resultText += `${food}（共 ${totalPeople} 人想吃/喝）：\n`;
         if (counts["想吃很多"] > 0) resultText += `  - 想吃/喝很多: ${counts["想吃很多"]} 人\n`;
         if (counts["正常份量"] > 0) resultText += `  - 正常份量: ${counts["正常份量"]} 人\n`;
         if (counts["一點就好"] > 0) resultText += `  - 一點就好: ${counts["一點就好"]} 人\n`;
+        if (counts["1杯"] > 0) resultText += `  - 1杯: ${counts["1杯"]} 人\n`;
         resultText += `-----------------------\n`;
       }
 
